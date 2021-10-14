@@ -15,7 +15,7 @@ with many atomic tree-shakable stores.
 * It has good **TypeScript** support.
 
 ```tsx
-import { useStore } from '@nanostores/react' // or '@nanostores/preact'
+import { useStore } from '@nanostores/react'
 
 import { profile } from '../stores/profile.js'
 import { User } from '../stores/user.js'
