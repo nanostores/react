@@ -1,0 +1,6 @@
+yarn-error.log
+yarn.lock
+
+coverage/
+*.test.ts
+tsconfig.json
