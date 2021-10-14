@@ -20,7 +20,8 @@
   "type": "module",
   "types": "./index.d.ts",
   "exports": {
-    ".": "./index.js"
+    ".": "./index.js",
+    "./package.json": "./package.json"
   },
   "react-native": {
     "./batch/index.js": "./batch/index.native.js"
@@ -145,7 +146,9 @@
       "\\d+\\.\\d+ “[^”]+”"
     ],
     "dictionary": [
-      "Versioning"
+      "Versioning",
+      "shakable",
+      "KB"
     ]
   },
   "sharec": {
