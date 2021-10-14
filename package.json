@@ -135,9 +135,6 @@
       "limit": "801 B"
     }
   ],
-  "clean-publish": {
-    "cleanDocs": true
-  },
   "yaspeller": {
     "lang": "en",
     "ignoreCapitalization": true,
