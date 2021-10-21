@@ -1,5 +1,5 @@
 {
-  "name": "nanostores-react",
+  "name": "@nanostores/react",
   "version": "0.1.0",
   "description": "React integration for Nano Stores, a tiny state manager with many atomic tree-shakable stores",
   "keywords": [
