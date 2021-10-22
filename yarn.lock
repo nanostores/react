@@ -4220,10 +4220,10 @@ nanospinner@^0.3.0:
   dependencies:
     picocolors "^1.0.0"
 
-nanostores@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/nanostores/-/nanostores-0.5.0.tgz#1a032cb542a868a2be1aee7f148d4e9c9c572a1b"
-  integrity sha512-3oT5r1BHSe0U23sIErUA/7Sfp94fEvEdhsZ5avKmyxlGDgke+gsnwhbXUaB72lW0G15e2JoRQbUuTLEY6MWyyA==
+nanostores@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/nanostores/-/nanostores-0.5.2.tgz#87416f10a1d486176380b4271707ea7905dd2dce"
+  integrity sha512-CdWJ4HkSzkamOX0Hy5+4Aeoy9EtJNgmMcVjlmeLn1Lv8uZ7gQo1XS4XsiigF2a7Rlv0AApm6q4N3TiwtxOmO/w==
 
 natural-compare@^1.4.0:
   version "1.4.0"
