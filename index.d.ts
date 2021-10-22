@@ -36,7 +36,9 @@ export function useStore<
 >(
   store: SomeStore,
   options?: UseStoreOptions<SomeStore, Key>
-): SomeStore extends MapStore ? Pick<StoreValue<Store>, Key> : StoreValue<Store>
+): SomeStore extends MapStore
+  ? Pick<StoreValue<SomeStore>, Key>
+  : StoreValue<SomeStore>
 
 /**
  * Batch React updates. It is just wrap for React’s `unstable_batchedUpdates`
