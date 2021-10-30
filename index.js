@@ -32,3 +32,28 @@ export function useStore(store, opts = {}) {
 
   return store.get()
 }
+
+export function useStoreListener(store, opts = {}) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (typeof store === 'function') {
+      throw new Error(
+        'Use useStore(Template(id)) or useSync() ' +
+          'from @logux/client/react for templates'
+      )
+    }
+  }
+
+  let listenerRef = React.useRef(opts.listener)
+  listenerRef.current = opts.listener
+
+  React.useEffect(() => {
+    let listener = (value, changed) => listenerRef.current(value, changed)
+    if (opts.keys) {
+      return listenKeys(store, opts.keys, listener)
+    } else {
+      return store.listen(listener)
+    }
+  }, [store, '' + opts.keys])
+
+  return null
+}
