@@ -32,3 +32,7 @@ export function useStore(store, opts = {}) {
 
   return store.get()
 }
+
+export function StoreWatcher({ store, opts, render }) {
+  return render(useStore(store, opts))
+}
