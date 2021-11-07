@@ -91,10 +91,11 @@ it('renders simple store', async () => {
   expect(screen.getByTestId('test2')).toHaveTextContent('c')
   expect(renders).toBe(2)
 
+  expect(screen.queryByTestId('test1')).toBeInTheDocument()
   act(() => {
     screen.getByRole('button').click()
   })
-  expect(screen.queryByTestId('test')).not.toBeInTheDocument()
+  expect(screen.queryByTestId('test1')).not.toBeInTheDocument()
   expect(renders).toBe(2)
 })
 
