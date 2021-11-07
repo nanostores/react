@@ -91,10 +91,11 @@ it('renders simple store', async () => {
   expect(screen.getByTestId('test2')).toHaveTextContent('c')
   expect(renders).toBe(2)
 
+  expect(screen.queryByTestId('test1')).toBeInTheDocument()
   act(() => {
     screen.getByRole('button').click()
   })
-  expect(screen.queryByTestId('test')).not.toBeInTheDocument()
+  expect(screen.queryByTestId('test1')).not.toBeInTheDocument()
   expect(renders).toBe(2)
 })
 
@@ -175,18 +176,18 @@ it('does not reload store on component changes', async () => {
   expect(destroyed).toBe('SM')
 })
 
-it('has keys option', async () => {
+it('handles keys option', async () => {
   type MapStore = {
     a?: string
     b?: string
   }
   let Wrapper: FC = ({ children }) => h('div', {}, children)
-  let mapSore = map<MapStore>()
+  let mapStore = map<MapStore>()
   let renderCount = 0
   let MapTest = (): React.ReactElement => {
     renderCount++
     let [keys, setKeys] = useState<(keyof MapStore)[]>(['a'])
-    let { a, b } = useStore(mapSore, { keys })
+    let { a, b } = useStore(mapStore, { keys })
     return h(
       'div',
       { 'data-testid': 'map-test' },
@@ -208,7 +209,7 @@ it('has keys option', async () => {
 
   // updates on init
   await act(async () => {
-    mapSore.set({ a: undefined, b: undefined })
+    mapStore.set({ a: undefined, b: undefined })
     await delay(1)
   })
 
@@ -219,7 +220,7 @@ it('has keys option', async () => {
 
   // updates when has key
   await act(async () => {
-    mapSore.setKey('a', 'a')
+    mapStore.setKey('a', 'a')
     await delay(1)
   })
 
@@ -228,7 +229,7 @@ it('has keys option', async () => {
 
   // does not update when has no key
   await act(async () => {
-    mapSore.setKey('b', 'b')
+    mapStore.setKey('b', 'b')
     await delay(1)
   })
 
