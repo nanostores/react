@@ -48,12 +48,15 @@ export function useStoreListener(store, opts = {}) {
 
   React.useEffect(() => {
     let listener = (value, changed) => listenerRef.current(value, changed)
+    if (opts.leading) {
+      listener(store.get())
+    }
     if (opts.keys) {
       return listenKeys(store, opts.keys, listener)
     } else {
       return store.listen(listener)
     }
-  }, [store, '' + opts.keys])
+  }, [store, '' + opts.keys, opts.leading])
 
   return null
 }

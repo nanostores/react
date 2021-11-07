@@ -40,6 +40,30 @@ export function useStore<
   ? Pick<StoreValue<SomeStore>, Key>
   : StoreValue<SomeStore>
 
+type Listener<SomeStore extends Store> = (
+  value: StoreValue<SomeStore>,
+  changed?: SomeStore extends MapStore ? StoreValue<SomeStore> : never
+) => void
+
+export interface UseStoreListenerOptions<
+  SomeStore extends Store,
+  Key extends string | number | symbol
+> extends UseStoreOptions<SomeStore, Key> {
+  leading?: boolean
+  listener: Listener<SomeStore>
+}
+
+/**
+ * Subscribe to store changes to trigger an effect
+ *
+ * @param store Store instance.
+ * @returns null
+ */
+export function useStoreListener<
+  SomeStore extends Store,
+  Key extends keyof StoreValue<Store>
+>(store: SomeStore, options: UseStoreListenerOptions<SomeStore, Key>): null
+
 /**
  * Batch React updates. It is just wrap for React’s `unstable_batchedUpdates`
  * with fix for React Native.
