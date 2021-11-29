@@ -32,7 +32,7 @@ export interface UseStoreOptions<
  */
 export function useStore<
   SomeStore extends Store,
-  Key extends keyof StoreValue<Store>
+  Key extends keyof StoreValue<SomeStore>
 >(
   store: SomeStore,
   options?: UseStoreOptions<SomeStore, Key>
