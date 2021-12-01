@@ -4,13 +4,14 @@ import {
   mapTemplate,
   onMount,
   atom,
-  map
+  map,
+  MapStore
 } from 'nanostores'
 import React, { FC } from 'react'
 import ReactTesting from '@testing-library/react'
 import { delay } from 'nanodelay'
 
-import { useStore } from './index.js'
+import { useStore, useStoreListener } from './index.js'
 
 let { render, screen, act } = ReactTesting
 let { createElement: h, useState } = React
@@ -177,16 +178,16 @@ it('does not reload store on component changes', async () => {
 })
 
 it('handles keys option', async () => {
-  type MapStore = {
+  type StoreValue = {
     a?: string
     b?: string
   }
   let Wrapper: FC = ({ children }) => h('div', {}, children)
-  let mapStore = map<MapStore>()
+  let mapStore = map<StoreValue>()
   let renderCount = 0
   let MapTest = (): React.ReactElement => {
     renderCount++
-    let [keys, setKeys] = useState<(keyof MapStore)[]>(['a'])
+    let [keys, setKeys] = useState<(keyof StoreValue)[]>(['a'])
     let { a, b } = useStore(mapStore, { keys })
     return h(
       'div',
@@ -244,4 +245,120 @@ it('handles keys option', async () => {
 
   expect(screen.getByTestId('map-test')).toHaveTextContent('map:a-b')
   expect(renderCount).toBe(4)
+})
+
+describe('useStoreListener hook', () => {
+  it('throws on template instead of store', () => {
+    let Test = (): void => {}
+    let [errors, Catcher] = getCatcher(() => {
+      // @ts-expect-error
+      useStoreListener(Test, { listener: () => {} })
+    })
+    render(h(Catcher))
+    expect(errors).toEqual([
+      'Use useStore(Template(id)) or useSync() ' +
+        'from @logux/client/react for templates'
+    ])
+  })
+
+  function createTest(opts = {}): {
+    Test: FC
+    stats: { renders: number; calls: number }
+    store: MapStore
+  } {
+    let store = map({ a: 0 })
+    let stats = { renders: 0, calls: 0 }
+    let Test = (): React.ReactElement => {
+      stats.renders += 1
+      useStoreListener(store, {
+        ...opts,
+        listener: () => {
+          stats.calls += 1
+        }
+      })
+      return h('span')
+    }
+    return { Test, stats, store }
+  }
+
+  it('invokes provided callback on store change', async () => {
+    let { Test, stats, store } = createTest()
+    render(h(Test))
+    await act(async () => {
+      store.set({ a: 1 })
+      await delay(1)
+    })
+    expect(stats.calls).toBe(1)
+  })
+
+  it("doesn't trigger rerenders on store change, but invokes the callback", async () => {
+    let { Test, stats, store } = createTest()
+    render(h(Test))
+    await act(async () => {
+      store.set({ a: 1 })
+      await delay(1)
+      store.set({ a: 2 })
+      await delay(1)
+    })
+    expect(stats.calls).toBe(2)
+    expect(stats.renders).toBe(1)
+  })
+
+  it('handles `leading` option', () => {
+    let { Test, stats } = createTest({ leading: true })
+    render(h(Test))
+    expect(stats.calls).toBe(1)
+    expect(stats.renders).toBe(1)
+  })
+
+  it('handles `keys` option', async () => {
+    let renders = 0
+    let calls = 0
+    type StoreValue = { a: number; b: number }
+    let mapStore = map<StoreValue>({ a: 0, b: 0 })
+    let MapTest = (): React.ReactElement => {
+      renders += 1
+      let [keys, setKeys] = useState<(keyof StoreValue)[]>(['a'])
+      useStoreListener(mapStore, {
+        keys,
+        listener: () => {
+          calls += 1
+        }
+      })
+      return h(
+        'div',
+        { 'data-testid': 'map-test' },
+        h('button', {
+          onClick: () => {
+            setKeys(['a', 'b'])
+          }
+        }),
+        null
+      )
+    }
+    render(h(MapTest))
+    await act(async () => {
+      mapStore.setKey('a', 1)
+      await delay(1)
+    })
+    expect(calls).toBe(1)
+    expect(renders).toBe(1)
+
+    // does not react to 'b' key change
+    await act(async () => {
+      mapStore.setKey('b', 1)
+      await delay(1)
+    })
+    expect(calls).toBe(1)
+    expect(renders).toBe(1)
+
+    await act(async () => {
+      screen.getByRole('button').click() // enable 'b' key
+      await delay(1)
+      mapStore.setKey('b', 2)
+      await delay(1)
+    })
+    expect(calls).toBe(2)
+    expect(renders).toBe(2) // due to `keys` state change inside the component
+  })
 })
