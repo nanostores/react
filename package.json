@@ -103,6 +103,9 @@
       "jsdom": false
     }
   },
+  "eslintIgnore": [
+    "**/errors.ts"
+  ],
   "size-limit": [
     {
       "import": {
