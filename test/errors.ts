@@ -1,5 +1,5 @@
 import { map } from 'nanostores'
-import { useStore } from './index'
+import { useStore } from '..'
 
 type TestType =
   | { id: string; isLoading: true }

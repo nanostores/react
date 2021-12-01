@@ -10,7 +10,7 @@ import React, { FC } from 'react'
 import ReactTesting from '@testing-library/react'
 import { delay } from 'nanodelay'
 
-import { useStore } from './index.js'
+import { useStore } from '../index.js'
 
 let { render, screen, act } = ReactTesting
 let { createElement: h, useState } = React
