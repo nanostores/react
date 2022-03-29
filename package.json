@@ -22,9 +22,6 @@
     ".": "./index.js",
     "./package.json": "./package.json"
   },
-  "react-native": {
-    "./batch/index.js": "./batch/index.native.js"
-  },
   "engines": {
     "node": "^12.0.0 || ^14.0.0 || >=16.0.0"
   },
@@ -112,7 +109,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1100 B"
+      "limit": "1064 B"
     }
   ]
 }
