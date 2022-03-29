@@ -1,6 +1,8 @@
 name: Test
 on:
   push:
+    branches:
+      - main
   pull_request:
 jobs:
   full:
@@ -8,16 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 17
-          cache: yarn
+          cache: pnpm
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Run tests
-        run: yarn test
+        run: pnpm test
         env:
           FORCE_COLOR: 2
   short:
@@ -31,15 +37,19 @@ jobs:
     name: Node.js ${{ matrix.node-version }} Quick
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
       - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
+          cache: pnpm
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Run unit tests
-        run: node --experimental-vm-modules node_modules/.bin/jest
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Run tests
+        run: node --experimental-vm-modules node_modules/jest/bin/jest.js
         env:
           FORCE_COLOR: 2
