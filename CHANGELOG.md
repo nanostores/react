@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2
+* Moved to React 18.
+* Removed `batch` export.
+
 ## 0.1.5
 * Reduced package size.
 
