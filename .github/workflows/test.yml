@@ -49,7 +49,7 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Run tests
-        run: node --experimental-vm-modules node_modules/jest/bin/jest.js
+      - name: Run unit tests
+        run: pnpm unit
         env:
           FORCE_COLOR: 2
