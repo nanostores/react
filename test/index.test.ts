@@ -6,8 +6,8 @@ import {
   atom,
   map
 } from 'nanostores'
+import React, { FC, ReactNode } from 'react'
 import { render, act, screen } from '@testing-library/react'
-import React, { FC } from 'react'
 import { equal, is } from 'uvu/assert'
 import { delay } from 'nanodelay'
 import { test } from 'uvu'
@@ -187,7 +187,9 @@ test('handles keys option', async () => {
     a?: string
     b?: string
   }
-  let Wrapper: FC = ({ children }) => h('div', {}, children)
+  let Wrapper: FC<{ children?: ReactNode }> = ({ children }) => {
+    return h('div', {}, children)
+  }
   let mapStore = map<MapStore>()
   let renderCount = 0
   let MapTest = (): React.ReactElement => {
