@@ -51,6 +51,7 @@
     "eslint-plugin-n": "^15.1.0",
     "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "jsdom": "^19.0.0",
     "nanodelay": "^2.0.2",
     "nanostores": "^0.5.12",
@@ -78,7 +79,10 @@
     "check-coverage": true
   },
   "eslintConfig": {
-    "extends": "@logux/eslint-config/esm",
+    "extends": [
+      "@logux/eslint-config/esm",
+      "plugin:react-hooks/recommended"
+    ],
     "rules": {
       "@typescript-eslint/no-explicit-any": "off"
     }
@@ -92,7 +96,10 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1064 B"
+      "limit": "1588 B"
     }
-  ]
+  ],
+  "dependencies": {
+    "use-sync-external-store": "^1.2.0"
+  }
 }
