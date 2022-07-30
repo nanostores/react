@@ -107,7 +107,7 @@ test('renders simple store', async () => {
 
 test('does not reload store on component changes', async () => {
   let destroyed = ''
-  let simple = atom<string>()
+  let simple = atom<string>('')
 
   onMount(simple, () => {
     simple.set('S')
