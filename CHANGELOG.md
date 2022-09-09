@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4
+* Moved to Nano Stores 0.7.
+
 ## 0.3
 * Moved to `useSyncExternalStore` (by @SukkaW).
 * Moved to Nano Stores 0.6.
