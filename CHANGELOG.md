@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.1
+* Fixed peer dependencies (by Tim Su).
+
 ## 0.4
 * Moved to Nano Stores 0.7.
 
