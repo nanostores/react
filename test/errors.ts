@@ -1,4 +1,4 @@
-import { map } from 'nanostores'
+import { map, WritableAtom } from 'nanostores'
 import { useStore } from '..'
 
 type TestType =
@@ -18,9 +18,23 @@ testValue.a
 let testValueSlice = useStore(test, { keys: ['isLoading', 'a'] })
 if (!testValueSlice.isLoading) {
   testValueSlice.a
-  // The rest of the error is skipped, because order of properties varies
-  // THROWS Property 'b' does not exist on type 'Pick<TestType,
   testValueSlice.b
 }
+if (testValueSlice.isLoading) {
+  testValueSlice.id
+  // THROWS Property 'a' does not exist on type
+  testValueSlice.a
+}
 
+// THROWS Property 'a' does not exist on type 'TestType'.
 testValueSlice.a
+
+declare const customStore: WritableAtom<TestType> & {
+  setKey: (key: 'hey' | 'there', value: unknown) => void
+}
+{
+  // THROWS Type '"does-not-exist"' is not assignable
+  useStore(customStore, { keys: ['does-not-exist'] })
+
+  let testValueSlice = useStore(customStore, { keys: ['hey', 'there'] })
+}
