@@ -26,6 +26,12 @@
   "engines": {
     "node": "^14.0.0 || ^16.0.0 || >=18.0.0"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/ai"
+    }
+  ],
   "dependencies": {
     "use-sync-external-store": "^1.2.0"
   },
