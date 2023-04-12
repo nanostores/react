@@ -52,7 +52,7 @@ export function useStore<SomeStore extends Store>(
  * import { router } from '../store/router'
  *
  * export const Layout = () => {
- *   let page = useStore(router, { keys: [ 'route' ] })
+ *   let page = useStore(router, { keys: ['route'] })
  *   if (page.route === 'home') {
  *     return <HomePage />
  *   } else {
