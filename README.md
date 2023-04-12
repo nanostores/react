@@ -6,7 +6,7 @@
 React integration for **[Nano Stores]**, a tiny state manager
 with many atomic tree-shakable stores.
 
-* **Small.** Less than 1 KB. Zero dependencies.
+* **Small.** Less than 2 KB. Zero dependencies.
 * **Fast.** With small atomic and derived stores, you do not need to call
   the selector function for all components on every store change.
 * **Tree Shakable.** The chunk contains only stores used by components
