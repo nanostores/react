@@ -85,6 +85,7 @@
       "plugin:react-hooks/recommended"
     ],
     "rules": {
+      "@typescript-eslint/unified-signatures": "off",
       "@typescript-eslint/no-explicit-any": "off"
     }
   },

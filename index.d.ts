@@ -7,6 +7,10 @@ type StoreKeys<T> = T extends { setKey: (k: infer K, v: any) => unknown }
   : never
 
 export interface UseStoreOptions<SomeStore> {
+  /**
+   * The attribute controls which store value properties
+   * will be returned and listened to.
+   */
   keys?: StoreKeys<SomeStore>[]
 }
 
@@ -59,12 +63,10 @@ export function useStore<SomeStore extends Store>(
  *
  * @param store Store instance.
  * @param options Subscription configuration.
- *     `keys` attribute controls which store value properties will be returned and listened to.
  * @returns Store value.
  */
 export function useStore<SomeStore extends Store>(
   store: SomeStore,
-  // eslint-disable-next-line @typescript-eslint/unified-signatures
   options?: UseStoreOptions<SomeStore>
 ): StoreValue<SomeStore>
 
