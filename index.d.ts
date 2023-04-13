@@ -8,8 +8,7 @@ type StoreKeys<T> = T extends { setKey: (k: infer K, v: any) => unknown }
 
 export interface UseStoreOptions<SomeStore> {
   /**
-   * The attribute controls which store value properties
-   * will be returned and listened to.
+   * Will re-render components only on specific key changes.
    */
   keys?: StoreKeys<SomeStore>[]
 }
@@ -35,34 +34,6 @@ export interface UseStoreOptions<SomeStore> {
  * ```
  *
  * @param store Store instance.
- * @returns Store value.
- */
-export function useStore<SomeStore extends Store>(
-  store: SomeStore
-): StoreValue<SomeStore>
-
-/**
- * Subscribe to store changes and get store’s value.
- *
- * Can be user with store builder too.
- *
- * ```js
- * import { useStore } from 'nanostores/react'
- *
- * import { router } from '../store/router'
- *
- * export const Layout = () => {
- *   let page = useStore(router, { keys: ['route'] })
- *   if (page.route === 'home') {
- *     return <HomePage />
- *   } else {
- *     return <Error404 />
- *   }
- * }
- * ```
- *
- * @param store Store instance.
- * @param options Subscription configuration.
  * @returns Store value.
  */
 export function useStore<SomeStore extends Store>(
