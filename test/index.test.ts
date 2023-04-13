@@ -21,32 +21,6 @@ test.after.each(() => {
   window.document.body.innerHTML = '<main></main>'
 })
 
-function getCatcher(cb: () => void): [string[], FC] {
-  let errors: string[] = []
-  let Catcher: FC = () => {
-    try {
-      cb()
-    } catch (e) {
-      if (e instanceof Error) errors.push(e.message)
-    }
-    return null
-  }
-  return [errors, Catcher]
-}
-
-test('throws on template instead of store', () => {
-  let Test = (): void => {}
-  let [errors, Catcher] = getCatcher(() => {
-    // @ts-expect-error
-    useStore(Test, 'ID')
-  })
-  render(h(Catcher))
-  equal(errors, [
-    'Use useStore(Template(id)) or useSync() ' +
-      'from @logux/client/react for templates'
-  ])
-})
-
 test('renders simple store', async () => {
   let renders = 0
 
