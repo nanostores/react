@@ -36,7 +36,7 @@
     "use-sync-external-store": "^1.2.0"
   },
   "peerDependencies": {
-    "nanostores": "^0.7.0",
+    "nanostores": "^0.8.0",
     "react": ">=18.0.0"
   },
   "devDependencies": {
@@ -59,9 +59,9 @@
     "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "happy-dom": "^9.3.1",
+    "happy-dom": "^9.5.0",
     "nanodelay": "^2.0.2",
-    "nanostores": "^0.7.4",
+    "nanostores": "^0.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "size-limit": "^8.2.4",
@@ -104,7 +104,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1712 B"
+      "limit": "1716 B"
     }
   ]
 }

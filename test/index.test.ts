@@ -1,11 +1,5 @@
 import './setup.js'
-import {
-  STORE_UNMOUNT_DELAY,
-  mapTemplate,
-  onMount,
-  atom,
-  map
-} from 'nanostores'
+import { STORE_UNMOUNT_DELAY, onMount, atom, map } from 'nanostores'
 import React, { FC, ReactNode } from 'react'
 import { render, act, screen } from '@testing-library/react'
 import { equal, is } from 'uvu/assert'
@@ -90,22 +84,14 @@ test('does not reload store on component changes', async () => {
     }
   })
 
-  let Map = mapTemplate<{ id: string }>((store, id) => {
-    return () => {
-      destroyed += id
-    }
-  })
-
   let TestA: FC = () => {
     let simpleValue = useStore(simple)
-    let { id } = useStore(Map('M'))
-    return h('div', { 'data-testid': 'test' }, `1 ${simpleValue} ${id}`)
+    return h('div', { 'data-testid': 'test' }, `1 ${simpleValue}`)
   }
 
   let TestB: FC = () => {
     let simpleValue = useStore(simple)
-    let { id } = useStore(Map('M'))
-    return h('div', { 'data-testid': 'test' }, `2 ${simpleValue} ${id}`)
+    return h('div', { 'data-testid': 'test' }, `2 ${simpleValue}`)
   }
 
   let Switcher: FC = () => {
@@ -138,12 +124,12 @@ test('does not reload store on component changes', async () => {
   }
 
   render(h(Switcher))
-  equal(screen.getByTestId('test').textContent, '1 S M')
+  equal(screen.getByTestId('test').textContent, '1 S')
 
   act(() => {
     screen.getByRole('button').click()
   })
-  equal(screen.getByTestId('test').textContent, '2 S M')
+  equal(screen.getByTestId('test').textContent, '2 S')
   equal(destroyed, '')
 
   act(() => {
@@ -153,7 +139,7 @@ test('does not reload store on component changes', async () => {
   equal(destroyed, '')
 
   await delay(STORE_UNMOUNT_DELAY)
-  equal(destroyed, 'SM')
+  equal(destroyed, 'S')
 })
 
 test('handles keys option', async () => {

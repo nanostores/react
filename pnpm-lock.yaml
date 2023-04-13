@@ -64,14 +64,14 @@ devDependencies:
     specifier: ^4.6.0
     version: 4.6.0(eslint@8.38.0)
   happy-dom:
-    specifier: ^9.3.1
-    version: 9.3.1
+    specifier: ^9.5.0
+    version: 9.5.0
   nanodelay:
     specifier: ^2.0.2
     version: 2.0.2
   nanostores:
-    specifier: ^0.7.4
-    version: 0.7.4
+    specifier: ^0.8.0
+    version: 0.8.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -1885,8 +1885,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /happy-dom@9.3.1:
-    resolution: {integrity: sha512-Ha2Pxpu1uFlyBVwNjalDuOjb99vtxj1sQArUDYqKwn+O+3UxFPB9fbX2V8fQEzAZdPC+gmpsyw2hxDXkjfOVbg==}
+  /happy-dom@9.5.0:
+    resolution: {integrity: sha512-pNdHSZRWIckzg8aDQRbBgaivr2Ef+uSTpCCRGnxIETyewHA6841T8EPE+cmfhPjGi5jQN6c+oloXGGYB5SrpcA==}
     dependencies:
       css.escape: 1.5.1
       he: 1.2.0
@@ -2323,9 +2323,9 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /nanostores@0.7.4:
-    resolution: {integrity: sha512-MBeUVt7NBcXqh7AGT+KSr3O0X/995CZsvcP2QEMP+PXFwb07qv3Vjyq+EX0yS8f12Vv3Tn2g/BvK/OZoMhJlOQ==}
-    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+  /nanostores@0.8.0:
+    resolution: {integrity: sha512-Xgs3qwYhNYXyglDe41JEtACDvFZELFRofDBqBuJ02JG1mrwXWneQTsk89GHvW0bgLPcWXOz4GRm4enwgjnD8FQ==}
+    engines: {node: ^16.0.0 || >=18.0.0}
     dev: true
 
   /natural-compare-lite@1.4.0:
