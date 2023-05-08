@@ -1,6 +1,5 @@
 import { listenKeys } from 'nanostores'
-import { useCallback } from 'react'
-import { useSyncExternalStore } from 'use-sync-external-store/shim/index.js'
+import { useCallback, useSyncExternalStore } from 'react'
 
 export function useStore(store, opts = {}) {
   let sub = useCallback(
