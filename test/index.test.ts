@@ -1,5 +1,5 @@
 import './setup.js'
-import { STORE_UNMOUNT_DELAY, onMount, atom, map } from 'nanostores'
+import { STORE_UNMOUNT_DELAY, onMount, atom, map, onStop } from 'nanostores'
 import React, { FC, ReactNode } from 'react'
 import { render, act, screen } from '@testing-library/react'
 import { equal, is } from 'uvu/assert'
@@ -208,6 +208,23 @@ test('handles keys option', async () => {
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-b')
   equal(renderCount, 4)
+})
+
+test('calling useStore does not cause onStop', async () => {
+  let letter = atom('a')
+
+  let wasStopCalled = false
+  onStop(letter, () => {
+    wasStopCalled = true
+  });
+
+  let Test: FC = () => {
+    let value = useStore(letter)
+    return h('div', { 'data-testid': 'test' }, value)
+  }
+
+  render(h(Test))
+  is(wasStopCalled, false)
 })
 
 test.run()
