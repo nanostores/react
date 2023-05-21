@@ -220,7 +220,7 @@ test('calling useStore does not cause onStop', async () => {
 
   let Test: FC = () => {
     let value = useStore(letter)
-    return h('div', { 'data-testid': 'test' }, value)
+    return h('div', null, value)
   }
 
   render(h(Test))
