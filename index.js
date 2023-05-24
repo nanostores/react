@@ -2,7 +2,7 @@ import { listenKeys } from 'nanostores'
 import { useCallback, useSyncExternalStore } from 'react'
 
 export function useStore(store, opts = {}) {
-  let sub = useCallback(
+  let subscribe = useCallback(
     onChange =>
       opts.keys
         ? listenKeys(store, opts.keys, onChange)
@@ -10,7 +10,7 @@ export function useStore(store, opts = {}) {
     [opts.keys, store]
   )
 
-  let get = useCallback(() => store.value, [store]);
+  let get = useCallback(() => store.value, [store])
 
-  return useSyncExternalStore(sub, get, get)
+  return useSyncExternalStore(subscribe, get, get)
 }
