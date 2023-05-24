@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7
+* Moved to Nano Stores 0.9.
+* Fixed unnecessary `onStart`/`onStop` calls (by Sergey Kozlov).
+
 ## 0.6
 * Reduced size by using import from React 18 (by Sergey Kozlov).
 
