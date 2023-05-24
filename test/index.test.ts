@@ -1,10 +1,12 @@
+import type { FC, ReactNode } from 'react'
+
 import './setup.js'
 import { STORE_UNMOUNT_DELAY, onMount, atom, map, onStop } from 'nanostores'
-import React, { FC, ReactNode } from 'react'
 import { render, act, screen } from '@testing-library/react'
 import { equal, is } from 'uvu/assert'
 import { delay } from 'nanodelay'
 import { test } from 'uvu'
+import React from 'react'
 
 import { useStore } from '../index.js'
 
