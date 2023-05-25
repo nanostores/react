@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react'
 
 import './setup.js'
-import { STORE_UNMOUNT_DELAY, onMount, atom, map, onStop } from 'nanostores'
+import { STORE_UNMOUNT_DELAY, onMount, atom, map, computed } from 'nanostores'
 import { render, act, screen } from '@testing-library/react'
 import { equal, is } from 'uvu/assert'
 import { delay } from 'nanodelay'
@@ -212,21 +212,19 @@ test('handles keys option', async () => {
   equal(renderCount, 4)
 })
 
-test('calling useStore does not cause onStop', async () => {
-  let letter = atom('a')
+test('works with stores that set their values in lifecycle hooks', async () => {
+  let $1 = atom(1)
+  let $2 = atom(1)
 
-  let wasStopCalled = false
-  onStop(letter, () => {
-    wasStopCalled = true
-  });
+  let $c = computed([$1, $2], (a, b) => a + b)
 
   let Test: FC = () => {
-    let value = useStore(letter)
+    let value = useStore($c)
+    if (value !== 2) throw new Error()
     return h('div', null, value)
   }
 
   render(h(Test))
-  is(wasStopCalled, false)
 })
 
 test.run()

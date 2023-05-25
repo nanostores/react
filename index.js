@@ -10,7 +10,7 @@ export function useStore(store, opts = {}) {
     [opts.keys, store]
   )
 
-  let get = useCallback(() => store.value, [store])
+  let get = store.get.bind(store)
 
   return useSyncExternalStore(subscribe, get, get)
 }
