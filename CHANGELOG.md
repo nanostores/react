@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7.1
+* Reverted `onStart`/`onStop` fix (by Dan Kozlov).
+
 ## 0.7
 * Moved to Nano Stores 0.9.
 * Fixed unnecessary `onStart`/`onStop` calls (by Sergey Kozlov).
