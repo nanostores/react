@@ -3,16 +3,16 @@ import type { FC, ReactNode } from 'react'
 import './setup.js'
 import { STORE_UNMOUNT_DELAY, onMount, atom, map, computed } from 'nanostores'
 import { render, act, screen } from '@testing-library/react'
-import { equal, is } from 'uvu/assert'
+import { equal, notEqual } from 'node:assert'
 import { delay } from 'nanodelay'
-import { test } from 'uvu'
+import { test, afterEach } from 'node:test'
 import React from 'react'
 
 import { useStore } from '../index.js'
 
 let { createElement: h, useState } = React
 
-test.after.each(() => {
+afterEach(() => {
   window.document.head.innerHTML = ''
   window.document.body.innerHTML = '<main></main>'
 })
@@ -67,11 +67,11 @@ test('renders simple store', async () => {
   equal(screen.getByTestId('test2').textContent, 'c')
   equal(renders, 2)
 
-  is.not(screen.queryByTestId('test1'), null)
+  notEqual(screen.queryByTestId('test1'), null)
   act(() => {
     screen.getByRole('button').click()
   })
-  is(screen.queryByTestId('test1'), null)
+  equal(screen.queryByTestId('test1'), null)
   equal(renders, 2)
 })
 
@@ -137,7 +137,7 @@ test('does not reload store on component changes', async () => {
   act(() => {
     screen.getByRole('button').click()
   })
-  is(screen.queryByTestId('test'), null)
+  equal(screen.queryByTestId('test'), null)
   equal(destroyed, '')
 
   await delay(STORE_UNMOUNT_DELAY)
@@ -226,5 +226,3 @@ test('works with stores that set their values in lifecycle hooks', async () => {
 
   render(h(Test))
 })
-
-test.run()
