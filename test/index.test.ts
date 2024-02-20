@@ -1,11 +1,11 @@
-import type { FC, ReactNode } from 'react'
-
 import './setup.js'
-import { STORE_UNMOUNT_DELAY, onMount, atom, map, computed } from 'nanostores'
-import { render, act, screen } from '@testing-library/react'
-import { equal, notEqual } from 'node:assert'
+
+import { act, render, screen } from '@testing-library/react'
 import { delay } from 'nanodelay'
-import { test, afterEach } from 'node:test'
+import { atom, computed, map, onMount, STORE_UNMOUNT_DELAY } from 'nanostores'
+import { equal, notEqual } from 'node:assert'
+import { afterEach, test } from 'node:test'
+import type { FC, ReactNode } from 'react'
 import React from 'react'
 
 import { useStore } from '../index.js'

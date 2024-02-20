@@ -95,7 +95,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "@logux/eslint-config",
+      "@logux/eslint-config/ts",
       "plugin:react-hooks/recommended"
     ],
     "rules": {
