@@ -5,7 +5,7 @@ export function useStore(store, opts = {}) {
   let subscribe = useCallback(
     onChange =>
       opts.keys
-        ? listenKeys(store, opts.keys, onChange)
+        ? listenKeys(store, Array.isArray(opts.keys) ? opts.keys : [opts.keys], onChange)
         : store.listen(onChange),
     [opts.keys, store]
   )
