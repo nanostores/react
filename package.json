@@ -40,29 +40,28 @@
     "react": ">=18.0.0"
   },
   "devDependencies": {
-    "@logux/eslint-config": "^52.0.2",
-    "@size-limit/preset-small-lib": "^11.0.2",
-    "@testing-library/react": "^14.2.1",
+    "@logux/eslint-config": "^53.2.0",
+    "@size-limit/preset-small-lib": "^11.1.4",
+    "@testing-library/react": "^15.0.7",
     "@types/node": "^20.13.0",
     "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.2.19",
+    "@types/react-dom": "^18.3.0",
     "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
     "better-node-test": "^0.5.1",
     "c8": "^9.1.0",
-    "check-dts": "^0.7.2",
-    "clean-publish": "^4.2.0",
-    "eslint": "^8.56.0",
+    "check-dts": "^0.8.0",
+    "clean-publish": "^5.0.0",
+    "eslint": "^9.4.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-n": "^17.7.0",
     "eslint-plugin-node-import": "^1.0.4",
-    "eslint-plugin-perfectionist": "^2.5.0",
+    "eslint-plugin-perfectionist": "^2.10.0",
     "eslint-plugin-prefer-let": "^3.0.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "happy-dom": "^13.3.8",
+    "eslint-plugin-promise": "^6.2.0",
+    "happy-dom": "^14.12.0",
     "nanodelay": "^2.0.2",
     "nanostores": "^0.10.3",
     "react": "^18.3.1",
@@ -93,19 +92,6 @@
     "skip-full": true,
     "clean": true
   },
-  "eslintConfig": {
-    "extends": [
-      "@logux/eslint-config/ts",
-      "plugin:react-hooks/recommended"
-    ],
-    "rules": {
-      "@typescript-eslint/unified-signatures": "off",
-      "@typescript-eslint/no-explicit-any": "off"
-    }
-  },
-  "eslintIgnore": [
-    "**/errors.ts"
-  ],
   "size-limit": [
     {
       "import": {
