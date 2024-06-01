@@ -6,3 +6,4 @@ let window = new Window()
 
 global.window = window
 global.document = window.document
+global.navigator = window.navigator
