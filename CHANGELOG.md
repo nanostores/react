@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7.3
+* Added Nano Stores 0.11 support.
+
 ## 0.7.2
 * Added Nano Stores 0.10 support.
 * Removed Node.js 16 support.
