@@ -91,7 +91,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "892 B"
+      "limit": "871 B"
     }
   ]
 }
