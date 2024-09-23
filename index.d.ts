@@ -7,16 +7,17 @@ type StoreKeys<T> = T extends { setKey: (k: infer K, v: any) => unknown }
 
 export interface UseStoreOptions<SomeStore> {
   /**
-   * Will re-render components only on specific key changes.
-   */
-  keys?: StoreKeys<SomeStore>[]
-  /**
    * @default
    * ```ts
    * [store, options.keys]
    * ```
    */
   deps?: DependencyList
+
+  /**
+   * Will re-render components only on specific key changes.
+   */
+  keys?: StoreKeys<SomeStore>[]
 }
 
 /**
