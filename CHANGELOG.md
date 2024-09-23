@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.0
+* Fixed `getSnapshot` warning by adding `deps` options (by @yuyi919).
+
 ## 0.7.3
 * Added Nano Stores 0.11 support.
 
