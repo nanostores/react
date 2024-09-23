@@ -1,16 +1,23 @@
 import { listenKeys } from 'nanostores'
-import { useCallback, useSyncExternalStore } from 'react'
+import { useCallback, useRef, useSyncExternalStore } from 'react'
 
-export function useStore(store, opts = {}) {
+export function useStore(store, { keys, deps = [store, keys] } = {}) {
+  let snapshotRef = useRef()
+  snapshotRef.current = store.get()
+
   let subscribe = useCallback(
     onChange =>
-      opts.keys
-        ? listenKeys(store, opts.keys, onChange)
-        : store.listen(onChange),
-    [opts.keys, store]
+      keys?.length > 0
+        ? listenKeys(store, keys, emit(snapshotRef, onChange))
+        : store.listen(emit(snapshotRef, onChange)),
+    deps
   )
-
-  let get = store.get.bind(store)
+  let get = () => snapshotRef.current
 
   return useSyncExternalStore(subscribe, get, get)
+}
+
+let emit = (snapshotRef, onChange) => value => {
+  snapshotRef.current = value
+  onChange()
 }

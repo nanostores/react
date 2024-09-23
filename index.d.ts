@@ -1,4 +1,5 @@
 import type { Store, StoreValue } from 'nanostores'
+import type { DependencyList } from 'react'
 
 type StoreKeys<T> = T extends { setKey: (k: infer K, v: any) => unknown }
   ? K
@@ -9,6 +10,13 @@ export interface UseStoreOptions<SomeStore> {
    * Will re-render components only on specific key changes.
    */
   keys?: StoreKeys<SomeStore>[]
+  /**
+   * @default
+   * ```ts
+   * [store, options.keys]
+   * ```
+   */
+  deps?: DependencyList
 }
 
 /**
