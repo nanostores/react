@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.1
+* Fixed peer warning with React 19 RC (by @aminabromand).
+
 ## 0.8.0
 * Fixed `getSnapshot` warning by adding `deps` options (by @yuyi919).
 
