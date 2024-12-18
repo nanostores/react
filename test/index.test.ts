@@ -226,3 +226,19 @@ test('works with stores that set their values in lifecycle hooks', async () => {
 
   render(h(Test))
 })
+
+test('useSyncExternalStore late subscription handling', async () => {
+  let $1 = atom('original content')
+
+  let Test: FC = () => {
+    let value = useStore($1)
+    // state update before the useSyncExternalStore subsciption happen
+    $1.set('updated content')
+
+    return h('div', { 'data-testid': 'subscription-test' }, value)
+  }
+
+  render(h(Test))
+
+  equal(screen.getByTestId('subscription-test').textContent, 'updated content')
+})
