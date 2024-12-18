@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.8.4
 * Fixed React 19 support (by @Alqanar).
 
+## 0.8.3
+* Clean `package.json`.
+
 ## 0.8.2
 * Fixed peer warning with React 19 RC (by @aminabromand).
 
