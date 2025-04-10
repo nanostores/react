@@ -15,11 +15,11 @@ with many atomic tree-shakable stores.
 - It has good **TypeScript** support.
 
 ```tsx
-import { useStore } from '@nanostores/react';
-import { $profile } from '../stores/profile.js';
+import { useStore } from '@nanostores/react'
+import { $profile } from '../stores/profile.js'
 
 export const Header = ({ postId }) => {
-  const profile = useStore($profile);
+  const profile = useStore($profile)
   return <header>Hi, {profile.name}</header>
 }
 ```
