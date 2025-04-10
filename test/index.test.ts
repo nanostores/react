@@ -212,7 +212,7 @@ test('handles keys option', async () => {
   equal(renderCount, 4)
 })
 
-test('works with stores that set their values in lifecycle hooks', async () => {
+test('works with stores that set their values in lifecycle hooks', () => {
   let $1 = atom(1)
   let $2 = atom(1)
 
@@ -227,12 +227,12 @@ test('works with stores that set their values in lifecycle hooks', async () => {
   render(h(Test))
 })
 
-test('useSyncExternalStore late subscription handling', async () => {
+test('useSyncExternalStore late subscription handling', () => {
   let $1 = atom('original content')
 
   let Test: FC = () => {
     let value = useStore($1)
-    // state update before the useSyncExternalStore subsciption happen
+    // state update before the useSyncExternalStore subscription happen
     $1.set('updated content')
 
     return h('div', { 'data-testid': 'subscription-test' }, value)
