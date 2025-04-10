@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.0
+* Added Nano Stores 1.0 support.
+* Removed Node.js 18 support.
+
 ## 0.8.4
 * Fixed React 19 support (by @Alqanar).
 
