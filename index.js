@@ -19,6 +19,8 @@ export function useStore(store, { keys, deps = [store, keys] } = {}) {
       : store.listen(emit(snapshotRef, onChange))
   }, deps)
   let get = () => snapshotRef.current
+  // `'init' in store` check for compatibility with nanostores <= 1.1.1
+  let init = 'init' in store ? () => store.init : get
 
-  return useSyncExternalStore(subscribe, get, get)
+  return useSyncExternalStore(subscribe, get, init)
 }

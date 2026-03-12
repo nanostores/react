@@ -3,10 +3,12 @@ import './setup.js'
 import { act, render, screen } from '@testing-library/react'
 import { delay } from 'nanodelay'
 import { atom, computed, map, onMount, STORE_UNMOUNT_DELAY } from 'nanostores'
-import { equal, notEqual } from 'node:assert'
+import { deepStrictEqual, equal, notEqual } from 'node:assert'
 import { afterEach, test } from 'node:test'
 import type { FC, ReactNode } from 'react'
 import React from 'react'
+import { hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 
 import { useStore } from '../index.js'
 
@@ -241,4 +243,65 @@ test('useSyncExternalStore late subscription handling', () => {
   render(h(Test))
 
   equal(screen.getByTestId('subscription-test').textContent, 'updated content')
+})
+
+test('returns initial value until hydrated via useSyncExternalStore', t => {
+  type Value = 'new' | 'old'
+  let atomStore = atom<Value>('old')
+  let mapStore = map<{ value: Value }>({ value: 'old' })
+
+  let atomValues: Value[] = [] // Track values used across renders
+
+  let AtomTest: FC = () => {
+    let value = useStore(atomStore)
+    atomValues.push(value)
+    return h('div', { 'data-testid': 'atom-test' }, value)
+  }
+
+  let mapValues: Value[] = [] // Track values used across renders
+
+  let MapTest: FC = () => {
+    let value = useStore(mapStore).value
+    mapValues.push(value)
+    return h('div', { 'data-testid': 'map-test' }, value)
+  }
+
+  let Wrapper: FC = () => {
+    return h('div', { 'data-testid': 'test' }, h(AtomTest), h(MapTest))
+  }
+
+  // Create a "server" rendered element to re-hydrate. Thanks to childrentime
+  // https://github.com/testing-library/react-testing-library/issues/1120#issuecomment-2065733238
+  let ssrElement = document.createElement('div')
+  document.body.appendChild(ssrElement)
+  let html = renderToString(h(Wrapper))
+  ssrElement.innerHTML = html
+
+  equal(screen.getByTestId('atom-test').textContent, 'old')
+  equal(screen.getByTestId('map-test').textContent, 'old')
+
+  // Simulate store state change on client-side, after "server" render
+  atomStore.set('new')
+  mapStore.set({ value: 'new' })
+
+  // Hydrate into SSR element. Logs errors to console on hydration failure
+  let consoleErrorMock = t.mock.method(console, 'error', () => {})
+  act(() => {
+    hydrateRoot(ssrElement, h(Wrapper))
+  })
+
+  // Check nothing was logged to `console.error()`
+  let consoleErrorCall = consoleErrorMock.mock.calls[0] as
+    | { arguments: any }
+    | undefined
+  let consoleErrorMessage = String(consoleErrorCall?.arguments?.[0] ?? '')
+  equal(consoleErrorMessage, '')
+
+  // Confirm "server" render got old values, initial client render got old
+  // values at hydration, then post-hydration render got new values
+  deepStrictEqual(atomValues, ['old', 'old', 'new'])
+  deepStrictEqual(mapValues, ['old', 'old', 'new'])
+
+  equal(screen.getByTestId('atom-test').textContent, 'new')
+  equal(screen.getByTestId('map-test').textContent, 'new')
 })
