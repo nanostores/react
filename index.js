@@ -18,5 +18,5 @@ export function useStore(store, { keys, deps = [store, keys] } = {}) {
       ? listenKeys(store, keys, emit(snapshotRef, onChange))
       : store.listen(emit(snapshotRef, onChange))
   }, deps)
-  return useSyncExternalStore(subscribe, () => snapshotRef.current, store.init)
+  return useSyncExternalStore(subscribe, () => snapshotRef.current, () => store.init)
 }
