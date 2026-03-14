@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.1
+* Fixed compatibility with client-side hydration of SSR components (by @jmurty).
+
 ## 1.0.0
 * Added Nano Stores 1.0 support.
 * Removed Node.js 18 support.
