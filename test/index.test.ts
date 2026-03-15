@@ -245,7 +245,7 @@ test('useSyncExternalStore late subscription handling', () => {
   equal(screen.getByTestId('subscription-test').textContent, 'updated content')
 })
 
-test('returns initial value until hydrated via useSyncExternalStore', t => {
+test('support for SSR does not break server behaviour in non-SSR projects', t => {
   type Value = 'new' | 'old'
   let atomStore = atom<Value>('old')
   let mapStore = map<{ value: Value }>({ value: 'old' })
@@ -270,6 +270,47 @@ test('returns initial value until hydrated via useSyncExternalStore', t => {
     return h('div', { 'data-testid': 'test' }, h(AtomTest), h(MapTest))
   }
 
+  // Simulate store state change on server side
+  atomStore.set('new')
+  mapStore.set({ value: 'new' })
+
+  // Create a "server" rendered element to re-hydrate. Thanks to childrentime
+  // https://github.com/testing-library/react-testing-library/issues/1120#issuecomment-2065733238
+  let ssrElement = document.createElement('div')
+  document.body.appendChild(ssrElement)
+  let html = renderToString(h(Wrapper))
+  ssrElement.innerHTML = html
+
+  // Confirm server rendered HTML includes the latest store data
+  equal(screen.getByTestId('atom-test').textContent, 'new')
+  equal(screen.getByTestId('map-test').textContent, 'new')
+})
+
+test('support SSR to fix client hydration errors, use initial data', t => {
+  type Value = 'new' | 'old'
+  let atomStore = atom<Value>('old')
+  let mapStore = map<{ value: Value }>({ value: 'old' })
+
+  let atomValues: Value[] = [] // Track values used across renders
+
+  let AtomTest: FC = () => {
+    let value = useStore(atomStore, { ssr: true })
+    atomValues.push(value)
+    return h('div', { 'data-testid': 'atom-test' }, value)
+  }
+
+  let mapValues: Value[] = [] // Track values used across renders
+
+  let MapTest: FC = () => {
+    let value = useStore(mapStore, { ssr: true }).value
+    mapValues.push(value)
+    return h('div', { 'data-testid': 'map-test' }, value)
+  }
+
+  let Wrapper: FC = () => {
+    return h('div', { 'data-testid': 'test' }, h(AtomTest), h(MapTest))
+  }
+
   // Create a "server" rendered element to re-hydrate. Thanks to childrentime
   // https://github.com/testing-library/react-testing-library/issues/1120#issuecomment-2065733238
   let ssrElement = document.createElement('div')
@@ -280,7 +321,7 @@ test('returns initial value until hydrated via useSyncExternalStore', t => {
   equal(screen.getByTestId('atom-test').textContent, 'old')
   equal(screen.getByTestId('map-test').textContent, 'old')
 
-  // Simulate store state change on client-side, after "server" render
+  // Simulate store change on client, now different from value at "server" SSR
   atomStore.set('new')
   mapStore.set({ value: 'new' })
 
@@ -297,11 +338,102 @@ test('returns initial value until hydrated via useSyncExternalStore', t => {
   let consoleErrorMessage = String(consoleErrorCall?.arguments?.[0] ?? '')
   equal(consoleErrorMessage, '')
 
-  // Confirm "server" render got old values, initial client render got old
-  // values at hydration, then post-hydration render got new values
+  // Confirm "server" render (renderToString) got old values, initial client
+  // render got old values at hydration, then post-hydration render got new
+  // values
   deepStrictEqual(atomValues, ['old', 'old', 'new'])
   deepStrictEqual(mapValues, ['old', 'old', 'new'])
 
   equal(screen.getByTestId('atom-test').textContent, 'new')
   equal(screen.getByTestId('map-test').textContent, 'new')
+})
+
+test('support SSR to fix client hydration errors, server passes data to client', t => {
+  type Value = 'initial' | 'update on client' | 'update on server'
+  let atomStore = atom<Value>('initial')
+  let mapStore = map<{ value: Value }>({ value: 'initial' })
+
+  let ssrDataFnForAtom: typeof atomStore.get | undefined
+  let ssrDataFnForMap: typeof mapStore.get | undefined
+
+  let atomValues: Value[] = [] // Track values used across renders
+
+  let AtomTest: FC = () => {
+    let value = useStore(atomStore, { ssr: ssrDataFnForAtom })
+    atomValues.push(value)
+    return h('div', { 'data-testid': 'atom-test' }, value)
+  }
+
+  let mapValues: Value[] = [] // Track values used across renders
+
+  let MapTest: FC = () => {
+    let value = useStore(mapStore, { ssr: ssrDataFnForMap }).value
+    mapValues.push(value)
+    return h('div', { 'data-testid': 'map-test' }, value)
+  }
+
+  let Wrapper: FC = () => {
+    return h(
+      'div',
+      { 'data-testid': 'test' },
+      h(AtomTest, null),
+      h(MapTest, null)
+    )
+  }
+
+  // Simulate store state change on server side
+  atomStore.set('update on server')
+  mapStore.set({ value: 'update on server' })
+
+  // Create a "server" rendered element to re-hydrate. Thanks to childrentime
+  // https://github.com/testing-library/react-testing-library/issues/1120#issuecomment-2065733238
+  let ssrElement = document.createElement('div')
+  document.body.appendChild(ssrElement)
+  let html = renderToString(h(Wrapper))
+  ssrElement.innerHTML = html
+
+  // Confirm server render includes latest updates to server store
+  equal(screen.getByTestId('atom-test').textContent, 'update on server')
+  equal(screen.getByTestId('map-test').textContent, 'update on server')
+
+  // Simulate store change on client, now different from value at "server" SSR
+  atomStore.set('update on client')
+  mapStore.set({ value: 'update on client' })
+
+  // Simulate passing of store state data from server to client, provided to
+  // hook via `ssr` option
+  ssrDataFnForAtom = (): Value => 'update on server'
+  let serverDataForMap = { value: 'update on server' as Value }
+  ssrDataFnForMap = (): { value: Value } => serverDataForMap
+
+  // Hydrate into SSR element. Logs errors to console on hydration failure
+  let consoleErrorMock = t.mock.method(console, 'error', () => {})
+  act(() => {
+    hydrateRoot(ssrElement, h(Wrapper))
+  })
+
+  // Check nothing was logged to `console.error()`
+  let consoleErrorCall = consoleErrorMock.mock.calls[0] as
+    | { arguments: any }
+    | undefined
+  let consoleErrorMessage = String(consoleErrorCall?.arguments?.[0] ?? '')
+  equal(consoleErrorMessage, '')
+
+  // Confirm "server" render (renderToString) got latest update on server,
+  // initial client render got latest server update at hydration, then
+  // post-hydration render got latest client update
+  deepStrictEqual(atomValues, [
+    'update on server',
+    'update on server',
+    'update on client'
+  ])
+  deepStrictEqual(mapValues, [
+    'update on server',
+    'update on server',
+    'update on client'
+  ])
+
+  // Confirm final rendered version has latest updates to client store
+  equal(screen.getByTestId('atom-test').textContent, 'update on client')
+  equal(screen.getByTestId('map-test').textContent, 'update on client')
 })
