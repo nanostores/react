@@ -245,7 +245,7 @@ test('useSyncExternalStore late subscription handling', () => {
   equal(screen.getByTestId('subscription-test').textContent, 'updated content')
 })
 
-test('support for SSR does not break server behaviour in non-SSR projects', t => {
+test('support for SSR does not break server behaviour in non-SSR projects', () => {
   type Value = 'new' | 'old'
   let atomStore = atom<Value>('old')
   let mapStore = map<{ value: Value }>({ value: 'old' })
