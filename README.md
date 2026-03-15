@@ -54,7 +54,7 @@ export const Header = () => {
 For advanced cases where you update store values on the server before SSR, and need pages to hydrate with the updated value from the server, set a function that returns the server state: `ssr: () => serverState`.
 
 ```tsx
-// Store value on server at time of SSR, passed to client somehow...
+// Value of store on server at time of SSR, passed to client somehow...
 const profileFromServer = { name: 'A User' }
 
 export const Header = () => {

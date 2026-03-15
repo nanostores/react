@@ -261,7 +261,11 @@ test('support for SSR does not break server behaviour in non-SSR projects', () =
   let mapValues: Value[] = [] // Track values used across renders
 
   let MapTest: FC = () => {
-    let value = useStore(mapStore).value
+    let value = useStore(
+      mapStore,
+      // Setting `ssr:false` should be equivalent to not setting `ssr` at all
+      { ssr: false }
+    ).value
     mapValues.push(value)
     return h('div', { 'data-testid': 'map-test' }, value)
   }

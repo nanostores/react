@@ -24,6 +24,6 @@ export function useStore(store, { keys, deps = [store, keys], ssr } = {}) {
   return useSyncExternalStore(
     subscribe,
     get,
-    ssr === true ? () => store.init : (ssr ?? get)
+    ssr === true ? () => store.init : ssr || get
   )
 }
