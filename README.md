@@ -24,9 +24,18 @@ export const Header = ({ postId }) => {
 }
 ```
 
-<h2>Options</h2>
+[Nano Stores]: https://github.com/nanostores/nanostores/
 
-<h3>Keys</h3>
+---
+
+<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" /> Made at <b><a href="https://evilmartians.com/devtools?utm_source=nanostores-react&utm_campaign=devtools-button&utm_medium=github">Evil Martians</a></b>, product consulting for <b>developer tools</b>.
+
+---
+
+
+## Options
+
+### Keys
 
 Use the `keys` option to re-render only on specific key changes:
 
@@ -37,11 +46,14 @@ export const Header = () => {
 }
 ```
 
-<h3>SSR</h3>
+### SSR
 
-Use the `ssr` option to avoid hydration errors loading server-side rendered (SSR) pages when the browser's client store gets out of sync with the server's HTML. For example, when using Astro with `<ClientRouter />` for client-side routing and a global nanostore.
+SSR could be very complicated in React. To avoid hydration errors you
+need exactly the same stores state in the end of server HTML rendering
+and during the first DOM render on the client.
 
-For simple cases where the store's initial value is the same on the server and the client, and there are no server-side store updates, set `ssr:true`:
+For simple solution you can disable any store update on the server
+by `ssr: 'initial'`:
 
 ```tsx
 export const Header = () => {
@@ -71,13 +83,5 @@ export const Header = () => {
 }
 ```
 
-A function set on `ssr` is provided to React's `useSyncExternalStore` as the
-`getServerSnapshot` option.
-
-[Nano Stores]: https://github.com/nanostores/nanostores/
-
----
-
-<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" /> Made at <b><a href="https://evilmartians.com/devtools?utm_source=nanostores-react&utm_campaign=devtools-button&utm_medium=github">Evil Martians</a></b>, product consulting for <b>developer tools</b>.
-
----
+A function set on `ssr` is provided to React's [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore)
+as the `getServerSnapshot` option.

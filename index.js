@@ -21,9 +21,10 @@ export function useStore(store, { keys, deps = [store, keys], ssr } = {}) {
 
   let get = () => snapshotRef.current
 
-  return useSyncExternalStore(
-    subscribe,
-    get,
-    ssr === true ? () => store.init : ssr || get
-  )
+  let server = get
+  if (ssr && 'init' in store) {
+    server = ssr === 'initial' ? () => store.init : ssr
+  }
+
+  return useSyncExternalStore(subscribe, get, server)
 }

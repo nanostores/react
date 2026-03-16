@@ -20,11 +20,11 @@ export interface UseStoreOptions<SomeStore> {
   keys?: StoreKeys<SomeStore>[]
 
   /**
-   * Enable SSR support. Set `true` when store's initial value is the same on
+   * Enable SSR support. Set `initial` when store's initial value is the same on
    * server and client, or provide a function to return the server store state
    * for advanced cases (per useSyncExternalStore's getServerSnapshot).
    */
-  ssr?: (() => StoreValue<SomeStore>) | boolean
+  ssr?: (() => StoreValue<SomeStore>) | 'initial' | false
 }
 
 /**

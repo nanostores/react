@@ -298,7 +298,7 @@ test('support SSR to fix client hydration errors, use initial data', t => {
   let atomValues: Value[] = [] // Track values used across renders
 
   let AtomTest: FC = () => {
-    let value = useStore(atomStore, { ssr: true })
+    let value = useStore(atomStore, { ssr: 'initial' })
     atomValues.push(value)
     return h('div', { 'data-testid': 'atom-test' }, value)
   }
@@ -306,7 +306,7 @@ test('support SSR to fix client hydration errors, use initial data', t => {
   let mapValues: Value[] = [] // Track values used across renders
 
   let MapTest: FC = () => {
-    let value = useStore(mapStore, { ssr: true }).value
+    let value = useStore(mapStore, { ssr: 'initial' }).value
     mapValues.push(value)
     return h('div', { 'data-testid': 'map-test' }, value)
   }
