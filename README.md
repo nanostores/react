@@ -24,6 +24,56 @@ export const Header = ({ postId }) => {
 }
 ```
 
+<h2>Options</h2>
+
+<h3>Keys</h3>
+
+Use the `keys` option to re-render only on specific key changes:
+
+```tsx
+export const Header = () => {
+  const profile = useStore($profile, { keys: 'name' })
+  return <header>{profile.name}</header>
+}
+```
+
+<h3>SSR</h3>
+
+Use the `ssr` option to avoid hydration errors loading server-side rendered (SSR) pages when the browser's client store gets out of sync with the server's HTML. For example, when using Astro with `<ClientRouter />` for client-side routing and a global nanostore.
+
+For simple cases where the store's initial value is the same on the server and the client, and there are no server-side store updates, set `ssr:true`:
+
+```tsx
+export const Header = () => {
+  const profile = useStore($profile, { ssr: true })
+  // Hydrate with initial profile, then render latest client-side value
+  return <header>{profile.name}</header>
+}
+```
+
+For advanced cases where you update store values on the server before SSR, and need pages to hydrate with the updated value from the server, set a function that returns the server state: `ssr: () => serverState`.
+
+```tsx
+// Value of store on server at time of SSR, passed to client somehow...
+const profileFromServer = { name: 'A User' }
+
+export const Header = () => {
+  const profile = useStore($profile, {
+    ssr:
+      typeof window === 'undefined'
+        ? // On server, always use up-to-date store value (no SSR handling)
+          false
+        : // On client, set server value to avoid error on hydration
+          () => profileFromServer
+  })
+  // Hydrate with profile at time of SSR, then render latest client-side value
+  return <header>{profile.name}</header>
+}
+```
+
+A function set on `ssr` is provided to React's `useSyncExternalStore` as the
+`getServerSnapshot` option.
+
 [Nano Stores]: https://github.com/nanostores/nanostores/
 
 ---

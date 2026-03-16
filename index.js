@@ -7,7 +7,7 @@ let emit = (snapshotRef, onChange) => value => {
   onChange()
 }
 
-export function useStore(store, { keys, deps = [store, keys] } = {}) {
+export function useStore(store, { keys, deps = [store, keys], ssr } = {}) {
   let snapshotRef = useRef()
   snapshotRef.current = store.get()
 
@@ -18,5 +18,12 @@ export function useStore(store, { keys, deps = [store, keys] } = {}) {
       ? listenKeys(store, keys, emit(snapshotRef, onChange))
       : store.listen(emit(snapshotRef, onChange))
   }, deps)
-  return useSyncExternalStore(subscribe, () => snapshotRef.current, () => store.init)
+
+  let get = () => snapshotRef.current
+
+  return useSyncExternalStore(
+    subscribe,
+    get,
+    ssr === true ? () => store.init : ssr || get
+  )
 }
