@@ -57,7 +57,7 @@ by `ssr: 'initial'`:
 
 ```tsx
 export const Header = () => {
-  const profile = useStore($profile, { ssr: true })
+  const profile = useStore($profile, { ssr: 'initial' })
   // Hydrate with initial profile, then render latest client-side value
   return <header>{profile.name}</header>
 }
