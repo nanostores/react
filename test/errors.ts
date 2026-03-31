@@ -1,5 +1,5 @@
 import { map, WritableAtom } from 'nanostores'
-import { useStore } from '..'
+import { useStore } from '../index.js'
 
 type TestType =
   | { id: string; isLoading: true }

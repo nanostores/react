@@ -7,6 +7,10 @@ let emit = (snapshotRef, onChange) => value => {
   onChange()
 }
 
+export function test() {
+  return 1
+}
+
 export function useStore(store, { keys, deps = [store, keys], ssr } = {}) {
   let snapshotRef = useRef()
   snapshotRef.current = store.get()
