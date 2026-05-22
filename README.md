@@ -100,7 +100,10 @@ export const HeaderWithKeys = ({ userId }) => {
 
 export const HeaderWithSelector = ({ userId }) => {
   // selector function automatically handles keys changes
-  const name = useSelector($profiles, profiles[userId].name.toUppercase())
+  const name = useSelector(
+    $profiles,
+    profiles => profiles[userId].name.toUppercase()
+  )
   return <header>{name}</header>
 }
 ```
