@@ -10,7 +10,7 @@ import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 
-import { useStore } from '../index.js'
+import { useStore } from '../use-store/index.js'
 
 let { createElement: h, useState } = React
 
