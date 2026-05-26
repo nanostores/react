@@ -1,6 +1,6 @@
 {
   "name": "@nanostores/react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "React integration for Nano Stores, a tiny state manager with many atomic tree-shakable stores",
   "keywords": [
     "react",
@@ -65,7 +65,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "958 B"
+      "limit": "977 B"
     }
   ],
   "engines": {
