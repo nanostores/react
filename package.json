@@ -32,10 +32,6 @@
     "test:size": "size-limit",
     "test": "pnpm run /^test:/"
   },
-  "dependencies": {
-    "@types/use-sync-external-store": "^1.5.0",
-    "use-sync-external-store": "^1.6.0"
-  },
   "devDependencies": {
     "@logux/oxc-configs": "^0.2.2",
     "@size-limit/preset-small-lib": "^12.0.1",
@@ -78,7 +74,7 @@
         "index.js": "{ useStore, useSelector }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "2004 B"
+      "limit": "1084 B"
     }
   ],
   "engines": {

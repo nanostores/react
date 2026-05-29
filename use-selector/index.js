@@ -1,8 +1,16 @@
-import { useCallback } from 'react'
-import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector'
+import { computed } from 'nanostores'
+import { useCallback, useMemo, useSyncExternalStore, useRef } from 'react'
 
 function defaultCompare(a, b) {
   return a === b
+}
+
+function emit(snapshotRef, onChange, compare) {
+  return value => {
+    if (compare(snapshotRef.current, value)) return
+    snapshotRef.current = value
+    onChange()
+  }
 }
 
 export function useSelector(
@@ -10,28 +18,27 @@ export function useSelector(
   selector,
   { compare = defaultCompare, ssr } = {}
 ) {
-  let subscribe = useCallback(
-    handleStoreChange => {
-      if (!store) return () => {}
+  let $computed = useMemo(() => computed(store, selector), [store, selector])
 
-      let unsubscribe = store.listen(handleStoreChange)
-      return unsubscribe
+  let snapshotRef = useRef()
+  snapshotRef.current = $computed.get()
+
+  let subscribe = useCallback(
+    onChange => {
+      emit(snapshotRef, onChange, compare)($computed.value)
+
+      return $computed.listen(emit(snapshotRef, onChange, compare))
     },
-    [store]
+    [$computed, compare]
   )
 
-  let get = useCallback(() => store?.get(), [store])
+  let get = () => snapshotRef.current
 
   let server = get
-  if (ssr && store && 'init' in store) {
-    server = ssr === 'initial' ? () => store.init : ssr
+  if (ssr && 'init' in store) {
+    server =
+      ssr === 'initial' ? () => selector(store.init) : () => selector(ssr())
   }
 
-  return useSyncExternalStoreWithSelector(
-    subscribe,
-    get,
-    server,
-    selector,
-    compare
-  )
+  return useSyncExternalStore(subscribe, get, server)
 }

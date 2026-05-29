@@ -100,9 +100,8 @@ export const HeaderWithKeys = ({ userId }) => {
 
 export const HeaderWithSelector = ({ userId }) => {
   // selector function automatically handles keys changes
-  const name = useSelector(
-    $profiles,
-    profiles => profiles[userId].name.toUppercase()
+  const name = useSelector($profiles, profiles =>
+    profiles[userId].name.toUppercase()
   )
   return <header>{name}</header>
 }
@@ -138,11 +137,16 @@ export const Posts = () => {
 
 ### SSR with useSelector
 
+SSR in `useSelector` works like in `useStore`. If you are passing a function to `ssr` make sure to return snapshot of the store you're passing into useSelector, not selected value.
+
 ```tsx
+const profileFromServer = { name: 'A User' }
+
 export const Header = () => {
   const name = useSelector($profile, profile => profile.name, {
-    ssr: 'initial'
+    ssr: typeof window === 'undefined' ? false : () => profileFromServer
   })
+
   return <header>{name}</header>
 }
 ```
