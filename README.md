@@ -32,7 +32,6 @@ export const Header = ({ postId }) => {
 
 ---
 
-
 ## Options
 
 ### Keys
@@ -85,3 +84,69 @@ export const Header = () => {
 
 A function set on `ssr` is provided to React's [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore)
 as the `getServerSnapshot` option.
+
+### Selector
+
+In some cases using selector store might be the preferred way of subscribing to store changes. In that case you can use `useSelector` hook.
+
+```tsx
+import { useStore, useSelector } from '@nanostores/react'
+import { $profiles } from '../stores/profiles.js'
+
+export const HeaderWithKeys = ({ userId }) => {
+  const profiles = useStore($profiles, { keys: [userId, 'name'] })
+  return <header>{profiles[userId].name.toUpperCase()}</header>
+}
+
+export const HeaderWithSelector = ({ userId }) => {
+  // selector function automatically handles keys changes
+  const name = useSelector($profiles, profiles =>
+    profiles[userId].name.toUppercase()
+  )
+  return <header>{name}</header>
+}
+```
+
+### Compare
+
+You can pass a different comparison function to `useSelector`, to determine when the data should trigger a re-render.
+
+```tsx
+import { useSelector } from '@nanostores/react'
+import { $user } from '../stores/user.js'
+import { shallowCompare } from '../utils/shallow.js'
+
+export const Posts = () => {
+  const ids = useSelector(
+    $user,
+    user => user.postIds, // [1, 2, 3]
+    { compare: shallowCompare }
+  )
+
+  return (
+    <div>
+      <span>Post ids: {ids.join(', ')}</span>
+      {/* does not trigger the re-render because ids are shallowly equal */}
+      <button onClick={() => $user.setKey('postIds', [1, 2, 3])}>
+        Refresh
+      </button>
+    </div>
+  )
+}
+```
+
+### SSR with useSelector
+
+SSR in `useSelector` works like in `useStore`. If you are passing a function to `ssr` make sure to return snapshot of the store you're passing into useSelector, not selected value.
+
+```tsx
+const profileFromServer = { name: 'A User' }
+
+export const Header = () => {
+  const name = useSelector($profile, profile => profile.name, {
+    ssr: typeof window === 'undefined' ? false : () => profileFromServer
+  })
+
+  return <header>{name}</header>
+}
+```

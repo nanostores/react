@@ -61,11 +61,20 @@
   },
   "size-limit": [
     {
+      "name": "min",
       "import": {
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "958 B"
+      "limit": "954 B"
+    },
+    {
+      "name": "max",
+      "import": {
+        "index.js": "{ useStore, useSelector }",
+        "nanostores": "{ map, computed }"
+      },
+      "limit": "1084 B"
     }
   ],
   "engines": {
