@@ -1,4 +1,5 @@
 import { map, WritableAtom } from 'nanostores'
+
 import { useStore } from '../index.js'
 
 type TestType =
