@@ -43,7 +43,6 @@
     "actions-up": "^1.14.3",
     "better-node-test": "^0.8.4",
     "check-dts": "^1.0.0",
-    "clean-publish": "^7.1.0",
     "happy-dom": "^20.10.6",
     "nanodelay": "^2.0.2",
     "nanostores": "^1.3.0",
