@@ -32,7 +32,6 @@ export const Header = ({ postId }) => {
 
 ---
 
-
 ## Options
 
 ### Keys
@@ -44,6 +43,14 @@ export const Header = () => {
   const profile = useStore($profile, { keys: 'name' })
   return <header>{profile.name}</header>
 }
+```
+
+Listening to a base key will automatically trigger a re-render
+if any of its nested properties mutate.
+
+```tsx
+// Will listen for all changes in profile object
+const profile = useStore($profile, { keys: ['profile'] })
 ```
 
 ### SSR
