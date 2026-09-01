@@ -64,7 +64,16 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "983 B"
+      "limit": "984 B",
+      "name": "useStore"
+    },
+    {
+      "import": {
+        "index.js": "{ useLoadingStore }",
+        "nanostores": "{ map, computed }"
+      },
+      "limit": "1080 B",
+      "name": "useLoadingStore"
     }
   ],
   "engines": {

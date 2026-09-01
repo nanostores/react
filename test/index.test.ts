@@ -10,9 +10,9 @@ import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 
-import { useStore } from '../index.js'
+import { useLoadingStore, useStore } from '../index.js'
 
-let { createElement: h, useState } = React
+let { createElement: h, Suspense, useState } = React
 
 afterEach(() => {
   window.document.head.innerHTML = ''
@@ -440,4 +440,234 @@ test('support SSR to fix client hydration errors, server passes data to client',
   // Confirm final rendered version has latest updates to client store
   equal(screen.getByTestId('atom-test').textContent, 'update on client')
   equal(screen.getByTestId('map-test').textContent, 'update on client')
+})
+
+type User =
+  | { error: Error; isLoading: false }
+  | { isLoading: false; name: string }
+  | { isLoading: true }
+
+class Boundary extends React.Component<
+  { children: ReactNode },
+  { error: string }
+> {
+  static getDerivedStateFromError(error: Error): { error: string } {
+    return { error: error.message }
+  }
+
+  constructor(props: { children: ReactNode }) {
+    super(props)
+    this.state = { error: '' }
+  }
+
+  override render(): ReactNode {
+    if (this.state.error) {
+      return h('div', { 'data-testid': 'error' }, this.state.error)
+    }
+    return this.props.children
+  }
+}
+
+function wrap(children: ReactNode): ReactNode {
+  return h(Boundary, {
+    children: h(Suspense, {
+      children,
+      fallback: h('div', { 'data-testid': 'loading' })
+    })
+  })
+}
+
+test('suspends component until store was loaded', async () => {
+  let $user = map<User>({ isLoading: true })
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  notEqual(screen.queryByTestId('loading'), null)
+  equal(screen.queryByTestId('name'), null)
+
+  await act(async () => {
+    $user.set({ isLoading: false, name: 'A' })
+    await delay(1)
+  })
+
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.getByTestId('name').textContent, 'A')
+})
+
+test('does not suspend on loaded store', async () => {
+  let renders = 0
+  let $user = map<User>({ isLoading: false, name: 'A' })
+
+  let Name: FC = () => {
+    renders += 1
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.getByTestId('name').textContent, 'A')
+  equal(renders, 1)
+
+  await act(async () => {
+    $user.set({ isLoading: false, name: 'B' })
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('name').textContent, 'B')
+  equal(renders, 2)
+})
+
+test('keeps store mounted during long loading', async () => {
+  let mounts = 0
+  let destroys = 0
+  let $user = map<User>({ isLoading: true })
+
+  onMount($user, () => {
+    mounts += 1
+    return () => {
+      destroys += 1
+    }
+  })
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  notEqual(screen.queryByTestId('loading'), null)
+
+  await act(async () => {
+    await delay(STORE_UNMOUNT_DELAY + 20)
+  })
+
+  equal(mounts, 1)
+  equal(destroys, 0)
+
+  await act(async () => {
+    $user.set({ isLoading: false, name: 'A' })
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('name').textContent, 'A')
+  equal(mounts, 1)
+  equal(destroys, 0)
+})
+
+test('shares loading between components', async () => {
+  let mounts = 0
+  let $user = map<User>({ isLoading: true })
+
+  onMount($user, () => {
+    mounts += 1
+  })
+
+  let Name: FC<{ id: string }> = ({ id }) => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': id }, user.name)
+  }
+
+  render(wrap([h(Name, { id: 'first', key: 1 }), h(Name, { id: 'second', key: 2 })]))
+  notEqual(screen.queryByTestId('loading'), null)
+  equal(mounts, 1)
+
+  await act(async () => {
+    $user.set({ isLoading: false, name: 'A' })
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('first').textContent, 'A')
+  equal(screen.getByTestId('second').textContent, 'A')
+  equal(mounts, 1)
+})
+
+test('suspends again on new loading', async t => {
+  t.mock.method(console, 'error', () => {})
+  let $user = map<User>({ isLoading: false, name: 'A' })
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  equal(screen.getByTestId('name').textContent, 'A')
+
+  await act(async () => {
+    $user.set({ isLoading: true })
+    await delay(1)
+  })
+
+  notEqual(screen.queryByTestId('loading'), null)
+  // React hides old content instead of unmounting it on repeated suspense
+  equal(screen.getByTestId('name').style.display, 'none')
+
+  await act(async () => {
+    $user.set({ isLoading: false, name: 'B' })
+    await delay(1)
+  })
+
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.getByTestId('name').style.display, '')
+  equal(screen.getByTestId('name').textContent, 'B')
+})
+
+test('throws loading error to error boundary', async t => {
+  t.mock.method(console, 'error', () => {})
+  let $user = map<User>({ isLoading: true })
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  notEqual(screen.queryByTestId('loading'), null)
+
+  await act(async () => {
+    $user.set({ error: new Error('Network'), isLoading: false })
+    await delay(1)
+  })
+
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.queryByTestId('name'), null)
+  equal(screen.getByTestId('error').textContent, 'Network')
+})
+
+test('renders Suspense fallback during SSR', async t => {
+  t.mock.method(console, 'error', () => {})
+  let $user = map<User>({ isLoading: true })
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  let ssrElement = document.createElement('div')
+  document.body.appendChild(ssrElement)
+
+  // `renderToString()` does not support Suspense: it renders the fallback
+  // and marks the boundary to be re-rendered on the client
+  let html = renderToString(wrap(h(Name)))
+  ssrElement.innerHTML = html
+  notEqual(screen.queryByTestId('loading'), null)
+  equal(screen.queryByTestId('name'), null)
+
+  await act(async () => {
+    hydrateRoot(ssrElement, wrap(h(Name)))
+    await delay(1)
+  })
+  notEqual(screen.queryByTestId('loading'), null)
+
+  await act(async () => {
+    $user.set({ isLoading: false, name: 'A' })
+    await delay(1)
+  })
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.getByTestId('name').textContent, 'A')
 })

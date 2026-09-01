@@ -53,6 +53,56 @@ if any of its nested properties mutate.
 const profile = useStore($profile, { keys: ['profile'] })
 ```
 
+### Loading
+
+`useLoadingStore()` suspends the component while the store is loading.
+It expects a store with `isLoading` key in the value.
+
+```ts
+// stores/user.ts
+import { map, onMount } from 'nanostores'
+
+export type User =
+  | { error: Error; isLoading: false }
+  | { isLoading: false; name: string }
+  | { isLoading: true }
+
+export const $user = map<User>({ isLoading: true })
+
+onMount($user, () => {
+  fetch('/api/user')
+    .then(response => response.json())
+    .then(user => $user.set({ isLoading: false, name: user.name }))
+    .catch(error => $user.set({ error, isLoading: false }))
+})
+```
+
+While `isLoading` is `true`, React will render the closest `<Suspense>`
+fallback. If the loaded value has `error`, it will be thrown to the closest
+error boundary. As a result, the component gets the value already narrowed
+to the loaded state.
+
+```tsx
+import { useLoadingStore } from '@nanostores/react'
+import { Suspense } from 'react'
+
+import { $user } from '../stores/user.js'
+
+const UserName = () => {
+  // TypeScript knows that the user is loaded and has no error here
+  const user = useLoadingStore($user)
+  return <h1>{user.name}</h1>
+}
+
+export const Page = () => (
+  <ErrorBoundary fallback={<LoadingError />}>
+    <Suspense fallback={<Spinner />}>
+      <UserName />
+    </Suspense>
+  </ErrorBoundary>
+)
+```
+
 ### SSR
 
 SSR could be very complicated in React. To avoid hydration errors you

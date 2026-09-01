@@ -32,3 +32,29 @@ export function useStore(store, { keys, deps = [store, keys], ssr } = {}) {
 
   return useSyncExternalStore(subscribe, get, server)
 }
+
+let loadings = new WeakMap()
+
+function suspend(store) {
+  let promise = loadings.get(store)
+  if (!promise) {
+    promise = new Promise(resolve => {
+      let unbind = store.listen(value => {
+        if (!value.isLoading) {
+          loadings.delete(store)
+          unbind()
+          resolve()
+        }
+      })
+    })
+    loadings.set(store, promise)
+  }
+  return promise
+}
+
+export function useLoadingStore(store) {
+  let value = useStore(store)
+  if (value.isLoading) throw suspend(store)
+  if (value.error) throw value.error
+  return value
+}

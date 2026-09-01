@@ -1,6 +1,6 @@
 import { map, WritableAtom } from 'nanostores'
 
-import { useStore } from '../index.js'
+import { useLoadingStore, useStore } from '../index.js'
 
 type TestType =
   | { id: string; isLoading: true }
@@ -39,3 +39,12 @@ declare const customStore: WritableAtom<TestType> & {
 
   let testValueSlice = useStore(customStore, { keys: ['hey', 'there'] })
 }
+
+let $loading = map<TestType>()
+
+let loaded = useLoadingStore($loading)
+loaded.a
+loaded.b
+
+// THROWS Property 'id' does not exist on type
+loaded.id
