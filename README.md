@@ -56,7 +56,7 @@ const profile = useStore($profile, { keys: ['profile'] })
 ### Loading
 
 `useLoadingStore()` suspends the component while the store is loading.
-It supports both loading formats: the state machine of [`@nanostores/async`]
+It supports both loading formats: the state machine of [Nano Stores Async]
 and the `isLoading` key of [Logux Client] and [Nano Stores SQL].
 
 ```ts
@@ -99,7 +99,7 @@ React has no built-in error boundary. You can write your own class component
 or take [`react-error-boundary`].
 
 [`react-error-boundary`]: https://github.com/bvaughn/react-error-boundary
-[`@nanostores/async`]: https://github.com/nanostores/async
+[Nano Stores Async]: https://github.com/nanostores/async
 [Nano Stores SQL]: https://github.com/nanostores/sql
 [Logux Client]: https://github.com/logux/client
 
