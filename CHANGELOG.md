@@ -2,6 +2,11 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.0
+
+- Added `useLoadingStore` for async stores.
+- Removed Node.js 20 support.
+
 ## 1.1.0
 
 - Added `ssr` option (by @jmurty).
