@@ -45,7 +45,7 @@
     "check-dts": "^2.0.1",
     "happy-dom": "^20.12.0",
     "nanodelay": "^2.0.2",
-    "nanostores": "^1.5.2",
+    "nanostores": "^1.5.3",
     "oxlint": "^1.81.0",
     "oxlint-tsgolint": "^7.0.2001",
     "react": "^19.2.8",
@@ -63,7 +63,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1202 B",
+      "limit": "1204 B",
       "name": "useStore"
     },
     {
@@ -71,7 +71,7 @@
         "index.js": "{ useLoadingStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1330 B",
+      "limit": "1334 B",
       "name": "useLoadingStore"
     }
   ],

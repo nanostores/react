@@ -13,7 +13,7 @@ importers:
         version: 1.1.0(oxlint-tsgolint@7.0.2001)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))(typescript@7.0.2)
       '@nanostores/async':
         specifier: ^0.1.0
-        version: 0.1.0(nanostores@1.5.2)
+        version: 0.1.0(nanostores@1.5.3)
       '@size-limit/preset-small-lib':
         specifier: ^13.0.3
         version: 13.0.3(size-limit@13.0.3)
@@ -45,8 +45,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       nanostores:
-        specifier: ^1.5.2
-        version: 1.5.2
+        specifier: ^1.5.3
+        version: 1.5.3
       oxlint:
         specifier: ^1.81.0
         version: 1.81.0(oxlint-tsgolint@7.0.2001)
@@ -659,8 +659,8 @@ packages:
   nanospinner@1.2.2:
     resolution: {integrity: sha512-Zt/AmG6qRU3e+WnzGGLuMCEAO/dAu45stNbHY223tUxldaDAeE+FxSPsd9Q+j+paejmm0ZbrNVs5Sraqy3dRxA==}
 
-  nanostores@1.5.2:
-    resolution: {integrity: sha512-B0UbxzK1s0CN8Xht6r+7iT5+xV8PTaRERR1nATeplRv1Rw5YLWfVAid0hkqY3EceqpG4RjTk8GAwIxQY39Rnwg==}
+  nanostores@1.5.3:
+    resolution: {integrity: sha512-rQLB6eV4f2AW/n3L0JmwCROpaisYy9EDEADvEFSd1C/qG8hB6O5TPlh9A791JRbJr4CnMQBzptDcvD9OR1+6WA==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   oxlint-tsgolint@7.0.2001:
@@ -832,9 +832,9 @@ snapshots:
       oxlint-tsgolint: 7.0.2001
       typescript: 7.0.2
 
-  '@nanostores/async@0.1.0(nanostores@1.5.2)':
+  '@nanostores/async@0.1.0(nanostores@1.5.3)':
     dependencies:
-      nanostores: 1.5.2
+      nanostores: 1.5.3
 
   '@oxlint-tsgolint/darwin-arm64@7.0.2001':
     optional: true
@@ -1117,7 +1117,7 @@ snapshots:
     dependencies:
       picocolors: 1.1.1
 
-  nanostores@1.5.2: {}
+  nanostores@1.5.3: {}
 
   oxlint-tsgolint@7.0.2001:
     optionalDependencies:
