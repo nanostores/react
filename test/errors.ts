@@ -1,3 +1,4 @@
+import { computedAsync } from '@nanostores/async'
 import { map, WritableAtom } from 'nanostores'
 
 import { useLoadingStore, useStore } from '../index.js'
@@ -48,3 +49,11 @@ loaded.b
 
 // THROWS Property 'id' does not exist on type
 loaded.id
+
+let $async = computedAsync($loading, () => ({ name: 'A' }))
+
+let asyncLoaded = useLoadingStore($async)
+asyncLoaded.name
+
+// THROWS Property 'isLoading' does not exist on type
+asyncLoaded.isLoading

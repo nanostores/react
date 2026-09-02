@@ -35,12 +35,14 @@ export function useStore(store, { keys, deps = [store, keys], ssr } = {}) {
 
 let loadings = new WeakMap()
 
+let isLoading = value => value.isLoading || value.state === 'loading'
+
 function suspend(store) {
   let promise = loadings.get(store)
   if (!promise) {
     promise = new Promise(resolve => {
       let unbind = store.listen(value => {
-        if (!value.isLoading) {
+        if (!isLoading(value)) {
           loadings.delete(store)
           unbind()
           resolve()
@@ -54,7 +56,7 @@ function suspend(store) {
 
 export function useLoadingStore(store) {
   let value = useStore(store)
-  if (value.isLoading) throw suspend(store)
-  if (value.error) throw value.error
-  return value
+  if (isLoading(value)) throw suspend(store)
+  if (value.state === 'failed' || value.error) throw value.error
+  return value.state === 'ready' ? value.value : value
 }

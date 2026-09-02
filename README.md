@@ -56,31 +56,25 @@ const profile = useStore($profile, { keys: ['profile'] })
 ### Loading
 
 `useLoadingStore()` suspends the component while the store is loading.
-It expects a store with `isLoading` key in the value.
+It supports both loading formats: the state machine of [`@nanostores/async`]
+and the `isLoading` key of [Logux Client] and [Nano Stores SQL].
 
 ```ts
 // stores/user.ts
-import { map, onMount } from 'nanostores'
+import { computedAsync } from '@nanostores/async'
+import { atom } from 'nanostores'
 
-export type User =
-  | { error: Error; isLoading: false }
-  | { isLoading: false; name: string }
-  | { isLoading: true }
+export const $userId = atom('user-1')
 
-export const $user = map<User>({ isLoading: true })
-
-onMount($user, () => {
-  fetch('/api/user')
-    .then(response => response.json())
-    .then(user => $user.set({ isLoading: false, name: user.name }))
-    .catch(error => $user.set({ error, isLoading: false }))
+export const $user = computedAsync($userId, userId => {
+  return fetch(`/api/users/${userId}`).then(response => response.json())
 })
 ```
 
-While `isLoading` is `true`, React will render the closest `<Suspense>`
-fallback. If the loaded value has `error`, it will be thrown to the closest
-error boundary. As a result, the component gets the value already narrowed
-to the loaded state.
+While the store is in the `loading` state, React will render the closest
+`<Suspense>` fallback. In the `failed` state, the error will be thrown
+to the closest error boundary. As a result, the component gets the loaded
+value without the `AsyncValue` wrapper.
 
 ```tsx
 import { useLoadingStore } from '@nanostores/react'
@@ -102,6 +96,14 @@ export const Page = () => (
   </ErrorBoundary>
 )
 ```
+
+React has no built-in error boundary. You can write your own class component
+or take [`react-error-boundary`].
+
+[`react-error-boundary`]: https://github.com/bvaughn/react-error-boundary
+[`@nanostores/async`]: https://github.com/nanostores/async
+[Nano Stores SQL]: https://github.com/nanostores/sql
+[Logux Client]: https://github.com/logux/client
 
 ### SSR
 

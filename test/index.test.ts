@@ -1,5 +1,6 @@
 import './setup.js'
 
+import { computedAsync } from '@nanostores/async'
 import { act, render, screen } from '@testing-library/react'
 import { delay } from 'nanodelay'
 import { atom, computed, map, onMount, STORE_UNMOUNT_DELAY } from 'nanostores'
@@ -670,4 +671,154 @@ test('renders Suspense fallback during SSR', async t => {
   })
   equal(screen.queryByTestId('loading'), null)
   equal(screen.getByTestId('name').textContent, 'A')
+})
+
+type Fetching = {
+  fail(error: Error): void
+  load(): Promise<{ name: string }>
+  resolve(name: string): void
+}
+
+function fetching(): Fetching {
+  let waiting: {
+    reject(error: Error): void
+    resolve(user: { name: string }): void
+  }[] = []
+  return {
+    fail(error) {
+      waiting.shift()!.reject(error)
+    },
+    load() {
+      return new Promise((resolve, reject) => {
+        waiting.push({ reject, resolve })
+      })
+    },
+    resolve(name) {
+      waiting.shift()!.resolve({ name })
+    }
+  }
+}
+
+test('suspends component until async store was loaded', async () => {
+  let api = fetching()
+  let $id = atom('1')
+  let $user = computedAsync($id, () => api.load())
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  notEqual(screen.queryByTestId('loading'), null)
+  equal(screen.queryByTestId('name'), null)
+
+  await act(async () => {
+    await delay(1)
+    api.resolve('A')
+    await delay(1)
+  })
+
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.getByTestId('name').textContent, 'A')
+})
+
+test('keeps async store loading during suspense', async () => {
+  let mounts = 0
+  let destroys = 0
+  let api = fetching()
+  let $id = atom('1')
+
+  onMount($id, () => {
+    mounts += 1
+    return () => {
+      destroys += 1
+    }
+  })
+
+  let $user = computedAsync($id, () => api.load())
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  notEqual(screen.queryByTestId('loading'), null)
+
+  await act(async () => {
+    await delay(STORE_UNMOUNT_DELAY + 20)
+  })
+
+  equal(mounts, 1)
+  equal(destroys, 0)
+
+  await act(async () => {
+    api.resolve('A')
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('name').textContent, 'A')
+  equal(destroys, 0)
+})
+
+test('does not suspend async store on changing', async () => {
+  let api = fetching()
+  let $id = atom('1')
+  let $user = computedAsync($id, () => api.load())
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+
+  await act(async () => {
+    await delay(1)
+    api.resolve('A')
+    await delay(1)
+  })
+  equal(screen.getByTestId('name').textContent, 'A')
+
+  await act(async () => {
+    $id.set('2')
+    await delay(1)
+  })
+
+  // Old value is still rendered while the store is changing
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.getByTestId('name').textContent, 'A')
+
+  await act(async () => {
+    api.resolve('B')
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('name').textContent, 'B')
+})
+
+test('throws async store error to error boundary', async t => {
+  t.mock.method(console, 'error', () => {})
+  let api = fetching()
+  let $id = atom('1')
+  let $user = computedAsync($id, () => api.load())
+
+  let Name: FC = () => {
+    let user = useLoadingStore($user)
+    return h('div', { 'data-testid': 'name' }, user.name)
+  }
+
+  render(wrap(h(Name)))
+  notEqual(screen.queryByTestId('loading'), null)
+
+  await act(async () => {
+    await delay(1)
+    api.fail(new Error('Network'))
+    await delay(1)
+  })
+
+  equal(screen.queryByTestId('loading'), null)
+  equal(screen.queryByTestId('name'), null)
+  equal(screen.getByTestId('error').textContent, 'Network')
 })
