@@ -7,7 +7,7 @@ type TestType =
   | { id: string; isLoading: true }
   | { isLoading: false; a: string; b: number; c?: number }
 
-let test = map<TestType>()
+let test = map<TestType>({ id: '1', isLoading: true })
 
 let testValue = useStore(test)
 if (!testValue.isLoading) {
@@ -41,7 +41,7 @@ declare const customStore: WritableAtom<TestType> & {
   let testValueSlice = useStore(customStore, { keys: ['hey', 'there'] })
 }
 
-let $loading = map<TestType>()
+let $loading = map<TestType>({ id: '1', isLoading: true })
 
 let loaded = useLoadingStore($loading)
 loaded.a

@@ -178,14 +178,14 @@ test('handles keys option', async () => {
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
   equal(renderCount, 1)
 
-  // updates on init
+  // does not update on set when watched keys have the same values
   await act(async () => {
     mapStore.set({ a: undefined, b: undefined })
     await delay(1)
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
-  equal(renderCount, 2)
+  equal(renderCount, 1)
 
   // updates when has key
   await act(async () => {
@@ -194,6 +194,15 @@ test('handles keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
+  equal(renderCount, 2)
+
+  // updates on set when watched key changed
+  await act(async () => {
+    mapStore.set({ a: 'a2', b: undefined })
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('map-test').textContent, 'map:a2-undefined')
   equal(renderCount, 3)
 
   // does not update when has no key
@@ -202,7 +211,7 @@ test('handles keys option', async () => {
     await delay(1)
   })
 
-  equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
+  equal(screen.getByTestId('map-test').textContent, 'map:a2-undefined')
   equal(renderCount, 3)
 
   // reacts on parameter changes
@@ -211,7 +220,7 @@ test('handles keys option', async () => {
     await delay(1)
   })
 
-  equal(screen.getByTestId('map-test').textContent, 'map:a-b')
+  equal(screen.getByTestId('map-test').textContent, 'map:a2-b')
   equal(renderCount, 4)
 })
 

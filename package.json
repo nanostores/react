@@ -33,27 +33,25 @@
     "test": "pnpm run /^test:/"
   },
   "devDependencies": {
-    "@logux/oxc-configs": "^0.4.0",
+    "@logux/oxc-configs": "^1.1.0",
     "@nanostores/async": "^0.1.0",
-    "@size-limit/preset-small-lib": "^12.1.0",
-    "@testing-library/react": "^16.3.2",
-    "@types/node": "^26.0.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@size-limit/preset-small-lib": "^13.0.3",
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
     "@types/ws": "^8.18.1",
-    "actions-up": "^1.14.3",
-    "better-node-test": "^0.8.4",
-    "check-dts": "^1.0.0",
-    "happy-dom": "^20.10.6",
+    "better-node-test": "^1.0.0",
+    "check-dts": "^2.0.1",
+    "happy-dom": "^20.12.0",
     "nanodelay": "^2.0.2",
-    "nanostores": "^1.3.0",
-    "oxlint": "^1.71.0",
-    "oxlint-tsgolint": "^0.23.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "size-limit": "^12.1.0",
-    "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "nanostores": "^1.5.2",
+    "oxlint": "^1.81.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "size-limit": "^13.0.3",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "nanostores": "^1.2.0",
@@ -65,7 +63,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "984 B",
+      "limit": "1202 B",
       "name": "useStore"
     },
     {
@@ -73,7 +71,7 @@
         "index.js": "{ useLoadingStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1113 B",
+      "limit": "1330 B",
       "name": "useLoadingStore"
     }
   ],
