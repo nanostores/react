@@ -71,7 +71,7 @@
         "index.js": "{ useLoadingStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "1334 B",
+      "limit": "1331 B",
       "name": "useLoadingStore"
     }
   ],
