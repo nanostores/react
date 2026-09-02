@@ -64,8 +64,6 @@ and the `isLoading` key of [Logux Client] and [Nano Stores SQL].
 import { computedAsync } from '@nanostores/async'
 import { atom } from 'nanostores'
 
-export const $userId = atom('user-1')
-
 export const $user = computedAsync($userId, userId => {
   return fetch(`/api/users/${userId}`).then(response => response.json())
 })
