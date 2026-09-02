@@ -2,6 +2,10 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.1
+
+- Reduced npm package size.
+
 ## 2.0.0
 
 - Added `useLoadingStore` for async stores.
