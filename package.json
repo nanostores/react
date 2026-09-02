@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@logux/oxc-configs": "^0.4.0",
+    "@nanostores/async": "^0.1.0",
     "@size-limit/preset-small-lib": "^12.1.0",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.0.1",
@@ -64,7 +65,16 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "983 B"
+      "limit": "984 B",
+      "name": "useStore"
+    },
+    {
+      "import": {
+        "index.js": "{ useLoadingStore }",
+        "nanostores": "{ map, computed }"
+      },
+      "limit": "1113 B",
+      "name": "useLoadingStore"
     }
   ],
   "engines": {

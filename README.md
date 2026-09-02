@@ -53,6 +53,58 @@ if any of its nested properties mutate.
 const profile = useStore($profile, { keys: ['profile'] })
 ```
 
+### Loading
+
+`useLoadingStore()` suspends the component while the store is loading.
+It supports both loading formats: the state machine of [`@nanostores/async`]
+and the `isLoading` key of [Logux Client] and [Nano Stores SQL].
+
+```ts
+// stores/user.ts
+import { computedAsync } from '@nanostores/async'
+import { atom } from 'nanostores'
+
+export const $userId = atom('user-1')
+
+export const $user = computedAsync($userId, userId => {
+  return fetch(`/api/users/${userId}`).then(response => response.json())
+})
+```
+
+While the store is in the `loading` state, React will render the closest
+`<Suspense>` fallback. In the `failed` state, the error will be thrown
+to the closest error boundary. As a result, the component gets the loaded
+value without the `AsyncValue` wrapper.
+
+```tsx
+import { useLoadingStore } from '@nanostores/react'
+import { Suspense } from 'react'
+
+import { $user } from '../stores/user.js'
+
+const UserName = () => {
+  // TypeScript knows that the user is loaded and has no error here
+  const user = useLoadingStore($user)
+  return <h1>{user.name}</h1>
+}
+
+export const Page = () => (
+  <ErrorBoundary fallback={<LoadingError />}>
+    <Suspense fallback={<Spinner />}>
+      <UserName />
+    </Suspense>
+  </ErrorBoundary>
+)
+```
+
+React has no built-in error boundary. You can write your own class component
+or take [`react-error-boundary`].
+
+[`react-error-boundary`]: https://github.com/bvaughn/react-error-boundary
+[`@nanostores/async`]: https://github.com/nanostores/async
+[Nano Stores SQL]: https://github.com/nanostores/sql
+[Logux Client]: https://github.com/logux/client
+
 ### SSR
 
 SSR could be very complicated in React. To avoid hydration errors you
